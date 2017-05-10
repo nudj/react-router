@@ -8,6 +8,7 @@ class ConnectedRouter extends Component {
   static propTypes = {
     store: PropTypes.object,
     history: PropTypes.object,
+    onChange: PropTypes.func,
     children: PropTypes.node
   }
 
@@ -20,6 +21,9 @@ class ConnectedRouter extends Component {
       type: LOCATION_CHANGE,
       payload: location
     })
+    if (this.props.onChange) {
+      this.props.onChange(this.store.dispatch, location)
+    }
   }
 
   componentWillMount() {
