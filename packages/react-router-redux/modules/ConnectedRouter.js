@@ -17,13 +17,15 @@ class ConnectedRouter extends Component {
   }
 
   handleLocationChange = location => {
-    this.store.dispatch({
-      type: LOCATION_CHANGE,
-      payload: location
+    const dispatch = this.store.dispatch
+    const onChange = this.props.onChange || function () { return Promise.resolve() }
+    const action = this.props.history.action
+    onChange(dispatch, location, action).then(function () {
+      dispatch({
+        type: LOCATION_CHANGE,
+        payload: location
+      })
     })
-    if (this.props.onChange) {
-      this.props.onChange(this.store.dispatch, location)
-    }
   }
 
   componentWillMount() {
@@ -31,7 +33,6 @@ class ConnectedRouter extends Component {
     this.store = propsStore || this.context.store
 
     this.unsubscribeFromHistory = history.listen(this.handleLocationChange)
-    this.handleLocationChange(history.location)
   }
 
   componentWillUnmount() {
